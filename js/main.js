@@ -19,13 +19,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add download counter (for demonstration)
-    const downloadBtn = document.querySelector('.download-btn');
-    let downloadCount = 0;
-    
-    downloadBtn.addEventListener('click', function() {
-        downloadCount++;
-        // You could add an API call here to update download count on server
-        console.log(`Download count: ${downloadCount}`);
-    });
+    // Initialize default crosshair settings
+    const crosshairSettings = {
+        color: '#000000',
+        thickness: 1,
+        dotSize: 2,
+        style: 'default'
+    };
+
+    // Function to generate crosshair image
+    function generateCrosshair() {
+        // Create a canvas element
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        canvas.width = 500;
+        canvas.height = 500;
+        
+        // Clear canvas
+        ctx.fillStyle = 'transparent';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw crosshair
+        ctx.strokeStyle = crosshairSettings.color;
+        ctx.lineWidth = crosshairSettings.thickness;
+        
+        // Draw horizontal line
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 - 100, canvas.height / 2);
+        ctx.lineTo(canvas.width / 2 + 100, canvas.height / 2);
+        ctx.stroke();
+        
+        // Draw vertical line
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2 - 100);
+        ctx.lineTo(canvas.width / 2, canvas.height / 2 + 100);
+        ctx.stroke();
+        
+        // Draw dot if enabled
+        if (crosshairSettings.dotSize > 0) {
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, crosshairSettings.dotSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Convert canvas to data URL
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'custom-crosshair.png';
+        
+        // Trigger download
+        link.click();
+    }
 });
